@@ -1,0 +1,44 @@
+https://youtu.be/IK3senLo-LQ
+-----------------------------------------------------------
+
+git clone https://github.com/arseniypom/grammy-tg-bot
+
+
+========================================================
+TelegramTrade
+TelTreiding_bot
+
+Use this token to access the HTTP API:
+7807365972:AAEOkEuKi4V5_gL5DQKz1fs91fpV_xnCKVI
+
+
+========================================================
+
+npm install dotenv
+
+npm install
+
+npm i -D typescript tsx @types/node
+
+install docker
+install docker-copmpose
+create docker-file
+
+docker-compose up -d
+docker ps
+
+docker-compose logs -f
+
+
+npm install mongoose && npm install -D @types/mongoose
+
+docker compose stop bot
+
+
+-------------------------------------------------
+00 : 23 : 57
+
+-------------------------------------------------
+npm run start
+
+-------------------------------------------------
