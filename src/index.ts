@@ -2,6 +2,7 @@ import "dotenv/config";
 import { Bot } from "grammy";
 import { GrammyError, HttpError } from "grammy";
 import mongoose from "mongoose";
+import { User } from "./models/User.js";
 
 const BOT_API_KEY = process.env.BOT_TOKEN;
 
@@ -12,9 +13,29 @@ if (!BOT_API_KEY) {
 const bot = new Bot(BOT_API_KEY);
 
 // Відповідь на команду /start
-bot.command("start", (ctx) => {
-  console.log(ctx.from);
-  ctx.reply("Привіт! Відправ мені будь-який  текст, і я його повторю.");
+bot.command("start", async (ctx) => {
+  if (!ctx.from) {
+    return ctx.reply("User info is not availbale");
+  }
+
+  const { id, first_name, username } = ctx.from;
+  try {
+    const existingUser = await User.findOne({ telegramId: id });
+    if (existingUser) {
+      return ctx.reply(`${existingUser.userName} Ви вже зареєстровані`);
+    }
+
+    const newUser = new User({
+      telegramId: id,
+      firstName: first_name,
+      userName: username,
+    });
+    newUser.save();
+    ctx.reply(`${newUser.userName} ви зарєструвались в системі`);
+  } catch (error) {
+    console.error("Помилка реєстрації користувача", error);
+    ctx.reply("Реєстрація не відбулась, спробуйте пізніше");
+  }
 });
 
 // Відповідь на будь-яке повідомлення
