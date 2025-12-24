@@ -42,3 +42,4 @@ docker compose stop bot
 npm run start
 
 -------------------------------------------------
+ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIBrbXQOjDsxyJJcRofvxqYMB8FBAecxxzCuskrhhczYd ivan8822@ukr.net
