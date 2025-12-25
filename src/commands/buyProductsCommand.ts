@@ -1,4 +1,4 @@
-import { products } from "./../consts/products";
+import { products } from "../consts/products.js";
 import { CallbackQueryContext, InlineKeyboard } from "grammy";
 import { MyContext } from "../types.js";
 
@@ -13,5 +13,14 @@ export const buyProducts = async (ctx: CallbackQueryContext<MyContext>) => {
     return ctx.callbackQuery.message?.editText("Продукт не знайдено");
   }
 
-  ctx.callbackQuery.message?.editText(`Ви обрали товар ${product.name}`);
+  await ctx.callbackQuery.message?.editText(
+    `Ви обрали товар: \n
+     ${product.name}\n
+     Ціна: ${product.price} грн.\n
+     
+     `,
+    {
+      reply_markup: new InlineKeyboard().text("<-- Повернутись", "backToMenu"),
+    }
+  );
 };
