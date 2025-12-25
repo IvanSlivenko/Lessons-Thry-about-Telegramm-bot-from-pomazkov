@@ -10,6 +10,7 @@ import {
   productsCommand,
   menu,
   backToMenu,
+  buyProducts,
 } from "./commands/index.js";
 
 const BOT_API_KEY = process.env.BOT_TOKEN;
@@ -32,6 +33,9 @@ bot.callbackQuery("products", productsCommand);
 
 // -------------------------------------------------------- profile
 bot.callbackQuery("profile", profile);
+
+// -------------------------------------------------------- buyProducts
+bot.callbackQuery(/^buyProduct-\d+$/, buyProducts);
 
 // ------------------------------------------------------- backToMenu
 bot.callbackQuery("backToMenu", backToMenu);
