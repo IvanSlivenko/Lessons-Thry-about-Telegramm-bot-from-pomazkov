@@ -21,7 +21,7 @@ export const start = async (ctx: MyContext) => {
       firstName: first_name,
       userName: username,
     });
-    newUser.save();
+    await newUser.save();
 
     return ctx.reply(`${newUser.userName} ви зарєструвались в системі`, {
       reply_markup: keyBoard,

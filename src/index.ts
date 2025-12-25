@@ -5,6 +5,7 @@ import mongoose from "mongoose";
 
 import { MyContext } from "./types.js";
 import { start } from "./commands/index.js";
+import { User } from "./models/User.js";
 
 const BOT_API_KEY = process.env.BOT_TOKEN;
 
@@ -13,19 +14,80 @@ if (!BOT_API_KEY) {
 }
 
 const bot = new Bot<MyContext>(BOT_API_KEY);
-bot.use(hydrate(), start);
 
-bot.callbackQuery('menu', (ctx)=> {
-  ctx.answerCallbackQuery()
-  
-  ctx.callbackQuery.message?.editText(
-    'Ви в головному меню магазину.\n
-     Звідси ви можете попасти в  розділ з товарами'
-  )
-})
-
+bot.use(hydrate());
 // Відповідь на команду /start
-bot.command("start");
+bot.command("start", start);
+
+// -------------------------------------------------------- menu
+bot.callbackQuery("menu", async (ctx) => {
+  await ctx.answerCallbackQuery();
+  await ctx.callbackQuery.message?.editText(
+    `🏪 Ви в головному меню\n
+     Звідси ви можете попасти в  розділ з товарами
+     та у свій профіль.👤\n Для переходу натисність на кнопку нижче:`,
+    {
+      reply_markup: new InlineKeyboard()
+        .text("Товари", "products")
+        .text("Профіль", "profile"),
+    }
+  );
+});
+
+// -------------------------------------------------------- products
+bot.callbackQuery("products", async (ctx) => {
+  await ctx.answerCallbackQuery();
+
+  await ctx.callbackQuery.message?.editText(`Ви в розділі товари`, {
+    reply_markup: new InlineKeyboard().text("<-- Повернутись", "backToMenu"),
+  });
+});
+
+// -------------------------------------------------------- profile
+bot.callbackQuery("profile", async (ctx) => {
+  await ctx.answerCallbackQuery();
+
+  const user = await User.findOne({
+    telegramId: ctx.from?.id,
+  });
+
+  if (!user) {
+    return await ctx.callbackQuery.message?.editText(
+      `Для доступу до профіля потрібно зареєструватись, використовуючи команду /start`
+    );
+  }
+
+  const registrationDate = user.createdAt.toLocaleDateString("ua-UA", {
+    year: "numeric",
+    month: "2-digit",
+    day: "2-digit",
+  });
+
+  await ctx.callbackQuery.message?.editText(
+    `Привіт ${ctx.from?.first_name}, \n
+    Дата реєстрації: ${registrationDate}\n
+    У вас ще немає замовлень,\n перейдіть у вкладку Товари. 
+    `,
+    {
+      reply_markup: new InlineKeyboard().text("<-- Повернутись", "backToMenu"),
+    }
+  );
+});
+
+// ------------------------------------------------------- backToMenu
+bot.callbackQuery("backToMenu", async (ctx) => {
+  await ctx.answerCallbackQuery();
+  await ctx.callbackQuery.message?.editText(
+    `Ви в головному меню магазину\
+     Звідси ви можете попасти в  розділ з товарами\
+     та у свій профіль. Для переходу натисність на кнопку нижче:`,
+    {
+      reply_markup: new InlineKeyboard()
+        .text("Товари", "products")
+        .text("Профіль", "profile"),
+    }
+  );
+});
 
 // Відповідь на будь-яке повідомлення
 bot.on("message:text", (ctx) => {
