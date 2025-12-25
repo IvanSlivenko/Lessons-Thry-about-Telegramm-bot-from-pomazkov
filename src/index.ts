@@ -15,6 +15,15 @@ if (!BOT_API_KEY) {
 const bot = new Bot<MyContext>(BOT_API_KEY);
 bot.use(hydrate(), start);
 
+bot.callbackQuery('menu', (ctx)=> {
+  ctx.answerCallbackQuery()
+  
+  ctx.callbackQuery.message?.editText(
+    'Ви в головному меню магазину.\n
+     Звідси ви можете попасти в  розділ з товарами'
+  )
+})
+
 // Відповідь на команду /start
 bot.command("start");
 
